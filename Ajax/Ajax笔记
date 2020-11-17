@@ -1,0 +1,132 @@
+1.传统问题：
+    .1 网速慢的情况下，页面加载时间长，用户只能等待
+    .2 表单提交后，如果有一项不符合，需要重写表单所有内容
+    .3 页面跳转，重新加载页面，造成资源浪费，增加用户等待的时间
+
+2. Ajax概述
+    它是浏览器提供的一套方法，可以实现页面无刷新更新数据，提高用户浏览网站应用的体验。
+
+3. 应用场景
+    .1 页面上拉加载更多数据
+    .2 列表数据无刷新分页
+    .3 表单项离开焦点数据验证
+    .4 搜索框提示文字下拉列表（比如：百度搜索）
+    提高用户浏览网站的体验
+
+
+4. 运行环境: 需要运行在网站环境中才能生效
+
+5. 运行原理：
+    浏览器端-----请求----->服务器端  
+           <-----响应-----            
+        （ps：此过程开发人员不可控）   
+
+    传统都是：    由浏览器本身向服务器发请求，由浏览器本身接收响应回来的数据，
+                 所有浏览器在发送和接收请求期间都不能响应用户的其他操作，比如继续浏览、拉动当前页面，所以用户体验不好
+    现在要实现：  用户在浏览当前网站期间，向服务器端发送请求，并将请求来的数据在不刷新页面的情况下更新在页面中，所以请求的发送与响应的接收，
+                 就不能由浏览器自己完成，Ajax就是浏览器的代理人，以实现在不影响用户浏览页面的情况下，局部更新页面数据。
+
+                浏览器端-----创建---->Ajax----请求----->服务器端
+                       <----响应-----    <----响应-----   
+                    （ps：此过程开发人员可控）
+
+6. Ajax的实现步骤
+    .1 创建Ajax对象(为浏览器创建帮它发请求的代理人)    
+        var xhr=new XMLHttpRequest()     创建 XMLHttpRequest 的实例对象就是在创建Ajax对象 
+
+        其中的XML:服务器端与客户端传输内容的数据格式  ， http：http协议
+        现在在ajax请求中，返回的数据格式一般是json数据格式，xml数据格式在ajax中已经比较少见了  
+
+    .2 告诉ajx请求地址，请求方式         
+        xhr.open('get','http://example/com');
+    
+    .3 发送请求 (不调用send方法请求不会发送)
+        xhr.send();               ！！必须以字符串的形式传递（在json数据格式传输中要特别注意转换）
+
+    .4 获取服务器端给客户端的响应数据
+        xhr.onload=function () {
+            console.log(xhr.responseText);
+        }
+
+       由于请求受网路速度的影响，需要一定的时间（不确定的时间），所以不能在send方法后面直接获取请求结果
+       需要对xhr下的onload事件添加事件处理函数，当服务器端对事件做出了响应，浏览器会自动调用xhr对象下的onload事件对应的事件处理函数。
+       在事件处理函数中，就可以获取服务器端响应给客户端的数据了。可以通过xhr对象下的 responseText属性来获取数据。
+
+7. 服务器端响应的数据格式
+    真实项目中，服务器端大多数情况会以json对象作为响应数据格式。客户端拿到数据时，将json数据和html字符串进行拼接，然后将拼接结果显示在页面中（使用dom操作的方式）。
+
+    在http请求与响应过程中，无论是请求参数还是响应内容，如果是对象类型，最终都会被转换为对象字符串进行传输
+    JSON.parse()方法json字符串转换为json对象
+
+8. 请求参数传递 
+    ·get  请求参数格式必须是application/x-www-form-urlencoded 
+    传统： 表单提交   
+    Ajax： 需要自己拼接请求参数    xhr.open('get','http://www.example.com?age=20&name=zhangsna')
+
+    ·post   请求参数格式application/x-www-form-urlencoded  或者 application/json
+    在请求参数报文中，明确设置请求报文的类型，将请求参数数放到xhr.send('age=20&name=zhangsna')中。
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
+    xhr.send(age=20&name=zhangsna);
+    使用body-parser模块的时候，要在app.js文件中加入
+    app.use(bodyParser.urlencoded({extended:false}));
+    不然 req.body会是undefined，
+    如果要解析的是json格式的  就要使用 app.use(bodyParser.json())
+
+    ps:请求报文： 在http请求和响应过程中传递的数据块就叫 报文 。包括要传递的数据和一些附加信息，这些数据要遵守规定好的格式
+
+9. 请求参数格式
+    1.  application/x-www-form-urlencoded    ==> age=20&name=zhangsna     对于get请求，格式只能是1这种
+    2.  application/json                     ==>{ age=20,name=zhangsna}   json格式 请求方式必须是post
+        在请求头中，指定 Content-Type为application/json
+        JSON.stringify()   将json对象转换为json字符串
+
+10. Ajax状态码
+    0： 请求未初始化（未调用open()方法）
+    1： 请求已经建立，但还没有发送（还没有调用send（））
+    2： 请求已经发送
+    3： 请求正在处理，通常响应中已经有部分数据可以用了
+    4： 响应已经完成，可以获取并使用服务器的响应了
+
+    xhr.readyState  获取状态码
+    onreadystatecchange事件， 当Ajax状态码发生改变自动触发该事件
+
+11. 获取服务器端的响应两种方式
+
+         区别                     onload事件（推荐）             onreadystatechange事件
+    是否兼容IE低版本                 不兼容                           兼容
+    是否需要判断Ajax状态码            不需要                           需要
+    被调用次数                       一次                             多次 
+
+    ps：onload事件 效率会更高，低版本浏览器再用onreadystatechange事件
+
+
+12. Ajax 错误处理
+    客户端获取状态码     xhr.status
+    服务器端设置状态码   req.status
+    
+    .1 网络畅通，服务器能接受请求，服务器端返回的结果不是预期结果 返回非200状态码
+        可以判断服务器端返回的状态码，分别进行处理。xhr.status获取http状态码
+
+    .2 404： 网络畅通，服务器端没有接收到请求 
+        检查请求地址是否错误 请求方式是否错误
+    
+    .3 500： 网络畅通，服务器端能接收到请求
+        服务器端程序出错，找弟弟解决
+    
+    .4 网络中断，请求无法发送到服务器 (触发 onerror事件)
+        不会触发onload事件，但是会触发xhr对象下面的onerror事件，在该事件中对错误进行处理
+        模拟断网： 浏览器调试窗口的offine选项 勾选就会断网
+
+13. 低版本IE浏览器的缓存问题
+        问题: 在请求地址不发生变化的情况下，只有第一次请求会真正发送到服务器端，后续的请求都会浏览器的缓存中获取结果。
+              即使服务器端数据更新，客户端依然拿到的是旧数据。(IE 8版本及以下就会有这个问题)
+
+        解决： 在请求地址的后面加请求参数，保证每一次啊请求中请求参数的值不同
+               xhr.open('get','http:localhost:4000/cache?t='+Math.random())
+               Math.random()生成从0-1之间的随机小数
+
+14. 在js中事件处理函数也是回调函数的一种
+    对象覆盖 ， 用于处理用户可选择性传参。用户传了就用用户的，没传递就用默认的。
+    
+    Object.assign(defaults,options)
+    使用defaults对象中的属性覆盖options对象中的属性  ，会影响defaults中的值，所以不用接收和赋值

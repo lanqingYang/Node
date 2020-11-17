@@ -1,0 +1,53 @@
+引入第三方模块 npm install art-template express-art-template
+
+
+1.模板配置 (14.js)
+    //1.告诉express框架使用什么模板引擎渲染什么后缀的模板文件
+    //参数1：模板后缀
+    //参数2：使用的模板引擎
+    app.engine("art", require("express-art-template"));
+
+    //2.模板存放的位置是什么
+    //参数1：固定，告诉模板存放的位置
+    //realpath里面的views代表文件夹的名字
+    app.set("views", realpath);
+
+    //3.模板的默认后缀
+    //参数1：默认模板后缀的配置项
+    app.set("view engine", "art");
+
+
+
+2.render方法！(14.js)
+  res.render("index", {
+    msg: "message",
+  });
+
+  render做的事情：
+  1.拼接路径
+  2.拼接后缀
+  3.哪一个文件和那个数据进行绑定
+  4.将拼接结果响应给客户端
+
+  原始 let html=template('模板路径'，数据)返回的是字符串拼接结果，需要调用res.send(html)响应
+
+
+
+3.app.locals  处理公共对象  (15.js)
+    将公共对象变量设置到app.locals对象下面，这个数据在所有模板中都可以获取到
+    app.locals.users = [
+  {
+    name: "张胜男",
+    age: 20,
+  },
+  {
+    name: "李四",
+    age: 20,
+  },
+    ];
+    在模板中就都能访问到users数据
+    在原始里面 （12.模板引擎 06模板配置中）
+    //导入模板变量
+    //template.defaults.imports.变量名=变量值 （变量值可以是其他第三方模块提供的方法）
+    template.defaults.imports.dateFormat = dateFormat;
+    通过这个方法，也能导入模板变量

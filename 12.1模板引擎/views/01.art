@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 标准语法 -->
+    <p>{{ name }}</p>
+    <p>{{ 1 + 1 }}</p>
+    <p>{{ 1 + 1 == 2 ? "相等" : "不相等" }}</p>
+    <!-- 不会把标签给输出出来，为了安全性考虑，（假设是一个script标签里面包含了1w次循环，被解析出来的化就很糟糕了） -->
+    <p>{{ content }}</p>
+    <!-- 原文输出 加@ ，如果你的数据中带有html标签，默认情况下 模板引擎不会进行解析-->
+    <p>{{@ content}}</p>
+
+    <!-- 原始语法 -->
+    <p><%=name %></p>
+    <p><%= 1+2 %></p>
+    <p><%= 1+2 ==3? "相等" : "不相等" %></p>
+    <p><%= content %></p>
+    <!-- 等号改为 '-' 原文输出 -->
+    <p><%- content %></p>
+  </body>
+</html>

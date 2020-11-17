@@ -1,0 +1,45 @@
+.常见的验证规则
+   const postSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    //必传字段
+  ·required: [true, "请传入文章标题"],
+    //required：true表示title这个参数必须传 ，不允许为空,
+    //第二个参数表示自定义的错误信息
+  ·minlength: 2,
+    //字符串的最小长度为2
+  ·maxlength: [5, "标题长度不能大于5"],
+    //最大长度5
+    trim: true,
+    //去除字符串两边！的空格
+  },
+  publishDate: {
+    type: Date,
+  ·default: Date.now,
+    //默认值，不传时间则默认当前时间
+  },
+  //文章分类字段
+  category: {
+    type: String,
+  ·enum: {
+      values: ["html", "css", "javascript", "node.js"],
+      message: "分类名称要在一定的范围内",
+    },
+    //enum枚举，列举出当前字段可以拥有的值。
+    //当前传入的参数，必须是枚举中的，不然就报错
+  },
+   author: {
+    type: String,
+    //自定义验证规则
+  ·validate: {
+      validator: (v) => {
+        //返回布尔值
+        //true成功，false失败
+        //v 要验证的值
+        return v && v.length > 4;
+      },
+      //自定义错误信息
+      message: "传入的值不符合验证规则",
+    },
+  },
+});

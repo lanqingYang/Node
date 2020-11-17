@@ -1,0 +1,52 @@
+{{extend  './common/layout.art'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/home/css/index.css" />
+{{/block}}
+
+{{block 'main'}}
+
+{{include './common/head.art'}}
+
+<!-- 文章列表开始 -->
+<ul class="list w1100">
+  {{each result.records}}
+  <li class="{{ $index % 2 == 0 ? 'fl' : 'fr' }}">
+    <a href="/home/article?id={{@ $value._id}}" class="thumbnail">
+      <img src="{{ $value.cover }}" />
+    </a>
+    <div class="content">
+      <a class="article-title" href="/home/article?id={{@ $value._id}}">{{ $value.title }}</a>
+      <div class="article-info">
+        <span class="author">{{ $value.author.username }}</span>
+        <span>{{ dateformat($value.publishDate, "yyyy-mm-dd") }}</span>
+      </div>
+      <div class="brief">
+        <!-- js的内置方法，可以直接使用，replace(/<[^>]+>/g,'')使用的正则表达式[^>]表示除了>,g全局匹配不是一个就完了，substr(0,150)截取字符串
+		为空格的时候会输出 &nbsp 用原文输出@就可以解决这个问题, 这里直接用@原文输出也可以不输出标签，但是会显示标签样式，如果为<h1>样式就糟糕了，所以这里需要做处理变成空字符串 -->
+        {{@ $value.content.replace(/<[^>]+>/g,'').substr(0,90)+'...' }}
+      </div>
+    </div>
+  </li>
+  {{/each}}
+</ul>
+<!-- 文章列表结束 -->
+
+<!-- 分页开始 -->
+<div class="page w1100">
+  {{if result.page>1}}
+  <a href="/home/?page={{ result.page - 1 }}">上一页</a>
+  {{/if}}
+
+  {{each result.display}}
+  <a
+    href="/home/?page={{ $value }}"
+    class="{{ result.page == $value ? 'active' : '' }}"
+    >{{ $value }}</a
+  >
+  {{/each}}
+  {{if result.page<result.pages}}
+  <a href="/home/?page={{ result.page - 0 + 1 }}">下一页</a>
+  {{/if}}
+</div>
+<!-- 分页结束 -->
+{{/block}}

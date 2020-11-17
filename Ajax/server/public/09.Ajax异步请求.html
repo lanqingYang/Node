@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ajax错误处理</title>
+  </head>
+  <body>
+    <button id="btn">发送ajax请求</button>
+  </body>
+  <script>
+    var btn = document.getElementById("btn");
+    btn.onclick = function () {
+      var xhr = new XMLHttpRequest();
+
+      xhr.open("get", "http://localhost:4000/cache?t=" + Math.random());
+
+      xhr.send();
+
+      xhr.onload = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          //异步代码有返回结果的时候，才执行异步处理函数
+          console.log("2");
+          alert(xhr.responseText);
+        }
+      };
+    };
+    console.log("1");
+
+    //先 1 后 2
+  </script>
+</html>

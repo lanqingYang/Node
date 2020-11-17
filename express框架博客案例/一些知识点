@@ -1,0 +1,180 @@
+1.模板中的相对路径是相对于哪儿?（这里主要是针对模板中引入了外链资源：外联样式、js的时候）
+    相对浏览器地址栏中请求路径   
+    http://localhost:3000/admin/login
+    会自动认为login是文件，所以现在相对http://localhost:3000/admin
+    http://localhost:3000/admin/css/base.css 当下可以被访问
+    但此种情况非常特殊，是因为文件正好在admin文件夹下。
+    当请求变成http://localhost:3000/abc/login，而css文件还是在名为admin的文件夹下，就访问不到静态资源了
+
+ 总结：（请求路径会变来变去，不安全） 所以！！！ 将相对路径改为绝对路径存储  
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    变成
+    <script src="/admin/lib/jquery/dist/jquery.min.js"></script>
+    在前面加 '/' 就变成绝对路径了
+
+
+静态资源的外链文件是由 浏览器解析的，所以它的相对路径是相对浏览器的请求地址的（在不断变化）
+而 子模板中写的路径，是由模板引擎解析的，所以写的相对路径是相对于当前文件，是没有问题的
+
+2. require在导入文件的时候，会同时执行这个文件
+
+3.在浏览器端可以禁用js代码，所以是不安全的，
+    所以，对填写内容的判断，在服务器端也应该写一个
+
+
+4.setTimeout()只执行一次，而setInterval（）可以多次调用。
+
+5.密码加密 bcrypt!
+    哈希加密是单程加密方式：1234=>abcd
+    在加密的密码中加入随机字符串增加破密难度
+    依赖pathon环境 1.python 2.x
+                  2.node-gyp;               npm install -g node-gyp
+                  3.windows-build-tools;    npm install --gloabal --production windwos-build-tools
+
+    使用：  1.导入模块 const bcrypt=require('bcrypt')
+            2. 生成随机字符串 gen=>generate 生成盐
+                let salt=await bcrypt.genSalt(10)
+            3.使用随机数加密
+                let pass=await bcrypt.hash('明文密码',salt)
+            4.密码比对
+                let isEqual=await bcrypt.compare('明文密码','加密密码')
+
+6.http协议的无状态性
+    在完成一次客户端与服务器端的请求后，服务器端就与客户端断开连接，没有联系了
+
+
+7.cookie与session 
+    cookie:  浏览器在电脑硬盘中开辟的一块空间  （在客户端存储数据）
+       · 在没有Cokie的情况下，发请求，服务器创建session会话对象，并且服务器每次创建session会话对象，
+        都会创建一个cookie对象，这个cookie对象的key是sessionid，值是最新创建出来的sessionid的值
+        · 客户端向服务器端发送请求，服务器端响应客户端，并为客户端的cookie中存储数据，
+        ·当客户端再次向服务器端发送请求时，会自动把cookie中的数据携带给服务器端，通过cookie中sessionid的值找到之前创建好的session对象并返回
+        ·删除cookie，在没有cookie的情况下，再次创建一个新的session会话对象！！
+    session: （在服务器端存储数据）
+    一个对象，存储在服务器端的内存中，可以存储多条数据，每条都有一个sessionid作为唯一标识
+    当网站重启后，服务器端的session对象将失效
+
+    当不设置cookie的删除时间，在浏览器被关闭的时候，cookie就被删除掉。
+    在cookie对象中设置保留时间：
+    cookie:{
+    //24小时，以毫秒为单位
+    maxAge:24*60*60*1000  
+}
+
+8.    req.app拿到的就是app.js里面的那个app
+      req.app.locals.userInfo=user;
+
+
+9.通过a标签进来的请求都是get请求
+
+10.对请求参数进行验证 Joi第三方模块
+    js对象的规则表述语言和验证器
+    joi@14.3.1安装这个旧版本，新版本没有joi.validate()验证方法
+
+    Joi.string()/Joi.number()：定义只能是字符串/数字类型
+
+    Joi.alphanum()：只能是字母字符串或者数字字符串
+
+    Joi.min()/max()：限制字符串最大最小长度
+
+    Joi.required()：此属性必填
+
+    Joi.error()：自定义错误信息
+
+    Joi.regex()：接收一个字符串规则验证
+
+    [Joi.string(), Joi.number()]：可以时字符串也可以是数字类型
+
+    Joi.string().valid('0','1')    字符串只能是0或1
+
+    Joi.integer()：必须是整数
+
+    可以链式调用
+
+11. 分页
+    总页数: Math.ceil(总数据条数/每页显式数据条数)    函数表示：向上取整 3.1=>4；3.8=>4
+    数据分页用到的函数： limit(n) 限制查询数量，传入每页显示的数据数量
+                       skip(m)  skip跳过多少条数据 传入显示数据的开始位置
+    数据开始查询的位置=(当前页-1) * 每页显示数据的条数
+
+    分页第三方模块： mongoose-sex-page
+    const pagination = require("mongoose-sex-page");
+    pagination(Article).page(1).size(2).display(3).exec()  //请求第一页的数据 ,每页显示2条数据,客户端显示3个页码,向数据库发送查询请求
+    page：指定当前页
+    size：指定每页显示多少条数据
+    display：指定客户端要显示的页码数量
+    exec: 已经指定完查询条件可以向数据库发送查询请求
+
+12.文件上传
+    对于文件上传，表单必须以二进制数据上传到服务器端，
+    方法：在form中 enctype属性：指定表单数据的编码类型 
+    默认 enctype = application/x-www-form-urlencoded 
+    代表：以 name=zhangsan&age=20 这种格式传到服务端
+    将表单编码成二进制类型:  enctype =multipart/form-data 
+
+13.接收二进制数据 formidable第三方模块
+      //1.创建表单解析对象
+    const form=  new formidable.IncomingForm();
+
+    //2.配置上传文件的存放位置 (最好绝对路径)
+    form.uploadDir=path.join(__dirname,'../','../','public','uploads');
+
+    //3.保留上传文件的后缀 true
+    form.keepExtensions=true;
+
+    //4.解析表单
+    form.parse(req,(err,fields,files)=>{
+        //1.err错误对象 如果表单解析成功，err为null 失败：存错错误信息
+        //2.fields 对象类型 保存普通该表单数据 （eg：name：zhangsan）
+        //3.files 对象类型 保存了和上传文件相关的数据 (eg:头像)
+        res.send(files)
+    })
+
+    14.将上传的文件显示在页面上 （要是想一次添加多个文件 要在input标签下添加 multiple属性）
+        创建文件读取对象FileReader
+
+15.联合查询
+  //查询所有文章数据,联合查询populate('author')
+  let articles = await Article.find().lean().populate("author");
+  auhtor此时存储一个对象；与author关联的所有的信息
+
+16.日期格式转换，并向模板内部！！导入变量
+    `dateformat 第三方模块 art-template第三方模块(在下载express-art-template时，已经下载好了)
+    `在app.js中配置
+    //向模板内部导入dateformat变量，
+    template.defaults.imports.dateformat = dateformat;
+    第一个dateformat：模板中使用时的变量名，第二个dateformat：导入第三方模块时用来接收的变量
+    
+
+17.mongoDB数据库添加账号
+    mongoDB 文件夹中 /log/mongod.log文件夹中存储的是日志文件
+                    /data文件夹中存储的是数据库内容
+    目前设置了：普通用户1： user:'normal' pwd:'normal' roles:['readWrite']
+               超级管理员账号1：user:'root' pwd:'root' roles:['root']
+
+18.开发环境与生产环境
+    环境:项目运行的地方。
+    当项目处于开发阶段，项目所处 开发环境。
+    完成后，将项目放在真实网站服务器电脑中运行，所处环境为 生产环境。
+    
+    为什么要区分？
+        在不同环境中配置不一样，根据不同环境应用不同的配置项目。比如数据库不一样。
+
+19. morgan第三方模块 
+     客户端向服务器端发送的请求  可以在控制台中打印
+     //在开发环境中，将客户端发送到服务器端的请求信息打印到控制台中
+  app.use(morgan('dev'))  信息包含：请求方式，请求地址，响应信息：状态码，长度等
+
+20. config 第三方模块
+     允许将不同运行环境下的应用配置信息抽离到单独的文件中。模块内部自动判断当前应用的运行化境，读取对应配置信息。
+     提供引用配置信息的维护成本，避免运行环境的多次切换时，手动到项目代码中修改配置信息
+
+     步骤：.1 npm install config
+           .2 根目录创建config文件夹
+           .3 在config文件下新建default.json(默认)、development.json(开发环境配置信息)、production.json(生产环境配置信息)文件
+           会在对应的环境信息中查找信息，如果没有找到就去default.json文件中去查找
+           .4 require进行导入
+           .5 利用模块内部提供的get方法获取配置信息
+
+     敏感信息存储在环境变量中，在config文件夹下简历cunstom-enviroment-variables.json文件；在配置项系统属性的值填写系统换环境变量的名字
+     

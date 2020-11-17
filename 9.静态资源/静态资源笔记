@@ -1,0 +1,20 @@
+静态资源：
+后端不需要处理，可以直接响应给客户端的资源，比如：css，javascript，image文件
+动态资源：
+相同的请求地址，不同的响应资源。
+比如http://www.it.cn/artical?id=1
+比如http://www.it.cn/artical?id=2
+
+
+请求地址仅仅是字符串标识，它的地址只是看起来像路径，它的路径和服务器文件的真实路径可以是不一样的
+
+
+在请求返回的是html文件中，有很多的超链接，src等去访问资源的 ，也会去调用fs.readFile，
+这个时候我们的响应报文中的信息 content-type就不知道它会是哪个文件 html、css、js？
+所以我们用到了MIME第三方模块
+MIME:媒体类型(通常称为 Multipurpose Internet Mail Extensions 或 MIME 类型 )是一种标准,用来表示文档、文件或字节流的性质和格式。
+
+下载mime  npm install mime
+引入系统模块mime
+通过请求路径分析出该资源的类型，并且返回
+mime.getType(路径)返回当前资源的类型

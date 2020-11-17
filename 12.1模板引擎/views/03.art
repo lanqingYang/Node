@@ -1,0 +1,19 @@
+<ul>
+  {{each Users}}
+  <li>
+    {{ $value.name }}
+    {{ $value.age }}
+    {{ $value.gender }}
+  </li>
+  {{/each}}
+</ul>
+
+<ul>
+    <% for(var i=0;i<Users.length;i++) { %>
+        <li>
+            <%=Users[i].name %>
+            <%=Users[i].age %>
+            <%=Users[i].gender %>
+        </li>
+        <% } %>
+</ul>

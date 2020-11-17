@@ -1,0 +1,3 @@
+{{ time }}
+通过导入dateFormat函数来转换时间
+{{ dateFormat(time, "yyyy-mm-dd hh:MM:ss") }}

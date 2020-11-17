@@ -1,0 +1,40 @@
+body {
+  background-color: lightsteelblue;
+}
+.wraper {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+table,
+th,
+td {
+  border: 1px solid gray;
+}
+table {
+  border-collapse: collapse; /* 显示一个表的单边框 */
+  width: 80%;
+  margin: 0 auto;
+  /* 表格居中 */
+}
+td,
+th {
+  padding: 3px 4px 4px 3px;
+  /* vertical-align: bottom; */
+}
+th {
+  background-color: rgb(247, 247, 247);
+}
+td {
+  color: black;
+  text-align: right;
+}
+caption {
+  font-size: 20px;
+  font-weight: bold;
+}
+table tr:nth-child(odd) {
+  /* 单行td设置背景颜色  双行even */
+  background-color: rgb(243, 243, 243);
+}

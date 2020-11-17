@@ -1,0 +1,48 @@
+1. package.json作用
+在把项目打包给别人的时候 node_module下的文件很多，全部打包会文件会很大，
+在package.json中，记录了当先项目信息，例如项目名称、版本、作者、github地址、
+！！!当前项目依赖了哪些第三方模块！
+通过这个就可以自己去下载第三方模块了
+
+
+2.创建package.json文件 
+文件夹中 执行 npm init 表示在当前目录下创建package.json文件 
+不行回答一系列问题  npm init -y (yes,全部用默认值)
+
+
+3.package.json文件一些注释
+json文件里不允许有注释
+"main": "index.js" ：项目的主模块
+"license": "ISC"  :项目遵循的协议：默认ISC 开放源代码的协议
+"scripts"： 存一些长命令的别名，通过 npm run 别名 就可以执行
+
+4.package.json文件记录依赖，以及为什么拉下被人的文件要先使用 npm install命令
+只要下载模块，就会在package.json文件中进行记录
+"dependencies"：依赖，记录当前项目所依赖的第三方块
+ "dependencies": {
+    "formidable": "^1.2.2",
+    "mime": "^2.4.6"
+  }
+
+  别人的项目，没有node_mdules， 我们只需要在命令里面 执行 npm install 
+  它会自动去package.json文件中找到"dependencies"，去下载里面的第三方模块 
+  所以在传递文件的时候不需要传递node_mdules文件夹
+
+  5.依赖
+  ·第三方包 项目依赖 开发与线上都需要的，利用npm install 命令下载的文件会被默认添加到package.json文件"dependencies"
+  ·开发依赖 项目开发阶段需要依赖，线上运行不需要依赖的第三方包，
+    利用npm install 包名 --save-dev命令 文件会被默认添加到package.json文件!!!"devDependencies"!!
+    比如gulp就是开发依赖，线上运行环境是不需要的
+
+6.package-lock.json 文件
+记录了模块与模块之间的依赖关系，锁定包的版本。
+加快下载速度，因为该文件已经记录了所依赖第三方包的下载地址和树状结构，就不需要再去解析。重装的时候只需要下载即可。
+
+
+
+
+7.根据不同的环境进行依赖的下载
+npm install 所有依赖都下载，包括开发依赖和项目依赖
+npm install --production（生产环境） 只下载项目依赖
+
+

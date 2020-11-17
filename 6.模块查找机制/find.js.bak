@@ -1,0 +1,1 @@
+console.log("模块查找机制下的find.js文件被引用");

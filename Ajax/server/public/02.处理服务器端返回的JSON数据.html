@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02 处理服务器返回的JSON数据</title>
+  </head>
+  <body>
+    <script>
+      //1. 创建ajax对象
+      var xhr = new XMLHttpRequest();
+
+      //2. 告诉ajax对象向哪儿发送请求 和 请求方式
+      // .1请求方式 .2 请求地址 (实际就是服务器端的路由地址)
+      xhr.open("get", "http://localhost:4000/responseData");
+
+      //3. 发送请求
+      xhr.send();
+
+      //4. 获取响应数据(需要一段时间才能接受到)
+      xhr.onload = function () {
+        //这里xhr.responseText传递回来是一个json对象的字符串，需要进行转换：JSON.parse方法
+        var responseText = JSON.parse(xhr.responseText);
+        console.log(responseText);
+        var str = "<h2>" + responseText.name + "</h2>";
+        //使用dom方法将拼接好的字符串追加到页面中
+        document.body.innerHTML = str;
+      };
+    </script>
+  </body>
+</html>

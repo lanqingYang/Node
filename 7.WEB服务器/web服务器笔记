@@ -1,0 +1,70 @@
+1.http协议（HyperText Transfer Protocol 超文本传输协议）
+客户端与服务器端进行沟通的规范
+规定了如何从网站服务器传输   ！！！超文本（包括文本、图片、音频等也就是html）！！ 到本地浏览器
+基于客户端服务器架构工作，是客户端（用户）与服务器端（网站）请求和应答的标准
+
+报文： http请求和响应过程种传递的数据块
+在检查中的 network中可以看到请求和响应的信息
+！请求报文：get/post 对获取数据用get，添加post，一般逻辑比如登陆也用post
+获取请求报文： request.headers
+
+2.请求方式 request.method
+get/post
+
+3.请求地址 request.url
+引入 url系统模块后，req.url 可以被替换为 url.parse(req.url,true).pathname
+
+4.响应报文：
+http状态码 ·200 成功
+           ·404 请求资源未被找到
+           ·500 服务器端错误
+           ·400 客户端请求语法错误
+
+内容类型： ·text/html
+          ·text/css
+          ·application/javascript
+          ·image/jpeg
+          ·application/json
+可用res.writeHead(状态码,{
+    //响应报文信息
+    'content-type':'text/plain'  //纯文本
+}) 更改 默认200
+
+
+5.http请求与响应处理
+· get请求参数
+  参数被放置在浏览器地址栏中， localhost:3030/index?name=zhangsan&age=20
+  加入url系统模块，通过url.parse(req.url, true)可以获取到将url地址处理成一个对象形式，true表示将name=zhangsan&age=20，变成键值对的形式，存在query中，通过url.parse(req.url, true).query就能拿到对象
+  url.parse(req.url, true)中的pathname存储url中的/index，不会存入后面的get请求参数（?name=zhangsan&age=20），方便用于路径判断，而req.url会包含后面的？..
+
+·post请求参数
+  post是被放到请求体(报文)中进行传输的,post参数会在检查中的FORM DATA 旁边的view source中被看到，格式与get其实相同，只是不放在url地址中去。
+  获取post参数需要用到data事件和end事件
+  使用queryString系统模块将参数转换为对象格式  queryString.parse()转换成对象格式
+
+
+
+
+
+出错记录：
+req.method  返回的GET\POST是大写！！ 进行字符串比对的时候用大写！！
+
+
+6.服务器基本概念
+ .1 ip地址：互联网协议地址（Internet Protocol Address）互联网设备的唯一标识 
+ .2 域名: ip难以记忆，产生了域名，就是平时上网所使用的地址。
+ 域名和ip是对应关系。虽然在地址栏中输入网址，但是还是会被转换成ip才能访问指定的网站服务器
+ .3 端口：计算机与外界交流的出口，用来区分服务器电脑中提供的不同的服务（文件服务？（比如端口号23提供的服务）邮件服务？（端口号25提供的服务））
+ .4 url:统一资源定位符（Uniform Resource Locator）专门识别internet网上资源位置而设的一种编址方式
+        平时说的网页地址就是url
+        ！！组成： 传输协议：//服务器ip或域名：端口/资源所在位置标识  （浏览器中端口被默认，不需要手动添加了，这个标识请求地址具体返回什么，是服务器端干的事情，所以它仅仅是标识不是一个资源对应的文件夹）
+        http://www.baidu.com/news/2017213/333.html
+        http:超文本传输协议（见第一条）
+
+7.开发过程中客户端和服务器端说明
+ 客户端和服务器使用同一台电脑，因为又有浏览器又有node运行环境
+ 本地ip：127.0.0.1 本机域名：localhost 通过网络的方式找到自己电脑对应的服务器
+
+
+ 整个过程 访问网站：
+ 通过ip或域名找到这台服务器，再使用端口来区分提供的不同服务. 

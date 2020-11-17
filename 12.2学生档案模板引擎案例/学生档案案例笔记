@@ -1,0 +1,19 @@
+1.router 路由
+npm install router 引入模块
+步骤： .1获取路由对象 const getRouter=require('router')
+       .2调用路由对象提供的方法创建路由 const router=getRouter()
+         router.get('路径'，(req,res)=>{}) ,router.post() 自己就有get post方法
+       .3启用路由是路由生效   
+       router(req,res，()=>{})
+        // 第三个参数是callback 必填
+       由于回调函数中要有req，res参数，所以 router的调用需要放到服务器的request请求下
+
+
+2.所有的模块（页面）都放到views文件夹下
+  静态资源都放在public文件夹下
+
+3.serve-static 实现静态资源访问服务 
+  第三方模块：npm install serve-static
+  .1引入模块获取创建静态资源服务的功能
+  .2调用方法创建静态资源服务并指定静态资源服务目录
+  .3启用静态资源服务功能

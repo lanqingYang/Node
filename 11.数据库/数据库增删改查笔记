@@ -1,0 +1,58 @@
+引入第三方模块mongoose 
+npm install mongoose
+ 
+和数据库相关的所有操作都是异步操作
+mongoose下的api也支持promise的方法
+
+1.开启MongoDB  ：net start mongoDB
+   停止: net stop mongoDB
+   管理员身份运行powershell
+
+2.在MongoDB中不需要显式创建数据库，当不存在时会自动创建
+
+3.mongodb数据导入：
+mongoimport -d 数据库名称 -c 集合名称 --file 要导入的数据文件
+
+4. （增） 创建文档
+        (Course集合构造函数)
+  方法一： .1创建集合实例 const course =new Course({})
+          .2调用实例对象下save方法将数据保存到数据库中 course.save()
+  方法二： Course.create({},callback)方法
+
+5. （查） 查询文档
+    Course.find({}) 查所有文档，返回数组，数组中包含多个对象,{}中为查询的条件
+    Course.findOne() 查当前集合中的第一条
+
+   ·1 匹配用法: $gt:匹配大于 $lt:小于 $in:包含
+    举例子：
+    Course.find({ age: { $gt: 20, $lt: 30 } }).then((result) => {
+   console.log(result);
+     });
+    
+    ·2 选择要查询的字段 
+    Course.find.select('name email -id') //多字段空格隔开,不想查哪个字段就在前加 '-'
+
+    ·3 排序 .sort()
+    Course.find.sort('age')  //按年龄升序排序 
+    Course.find.sort('-age')  //按年龄降序排序 
+
+    ·4 跳过数据，限制查询数量（分页的时候可以使用）
+    Course.find().skip(2).limit(2) //跳过前两条文档，只查询两条数据
+
+6.(删) 删除文档
+    .1删除单个 ，匹配到多个则删除第一个  返回值是删除的那个对象
+      Course.findOneAndDelete({})
+
+    .2删除多条数据 （对象为空{}删除整个集合中所有数据）
+     //返回一个对象{ n: 2, ok: 1, deletedCount: 2 } n:受影响的数据，ok：表删除成功 deletedCount：删除文档数
+     Course.deleteMany({ name: "李华" })
+
+7.(改) 更新文档
+    .1 更新数据库中一个文档  
+    Course.updateOne({查询条件}，{要修改的值})
+    返回值：{ n: 1, nModified: 1, ok: 1 } n:受影响的数据，ok：表更新成功 deletedCount：更新文档数
+
+    .2更新多个文档,传空对象表示更改所有文档 
+    Course.updateMany({ author: "李华" }, { author: "大岳丸" })
+    返回值：{ n: , nModified: , ok: 1 }
+

@@ -1,0 +1,67 @@
+1.进步史：
+【ps：get请求参数 与 post请求参数
+    · get请求参数
+  参数被放置在浏览器地址栏中， localhost:3030/index?name=zhangsan&age=20
+  加入url系统模块，通过url.parse(req.url, true)可以获取到将url地址处理成一个对象形式，true表示将name=zhangsan&age=20，变成键值对的形式，存在query中，通过url.parse(req.url, true).query就能拿到对象
+  url.parse(req.url, true)中的pathname存储url中的/index，不会存入后面的get请求参数（?name=zhangsan&age=20），方便用于路径判断，而req.url会包含后面的？..
+
+    ·post请求参数
+  post是被放到请求体(报文)中进行传输的,post参数会在检查中的FORM DATA 旁边的view source中被看到，格式与get其实相同，只是不放在url地址中去。
+  获取post参数需要用到data事件和end事件
+  使用queryString系统模块将参数转换为对象格式  queryString.parse()转换成对象格式
+】
+  .1 最原始 （7.web服务器文件夹）
+    app.on('request',(req,res)=>{
+    解析url地址
+    判断方法，req.mehtod ：GET,POST
+    获取请求参数 
+    响应
+}) 
+
+
+ .2 引入router (8.路由文件夹)
+     //引入router模块，返回值是用来创建路由对象的
+    const getRouter = require("router");
+    //获取路由对象
+    const router = getRouter();
+    router.get('路径'，callback),router.post(同)
+
+ .3 引入express框架
+    app.get('路径'，callback),app.post(同)
+
+ .4 构建模块化路由 exprss框架 (07.js)
+   ..1 exprss.Router()创建一个路由对象      const home = exprss.Router()
+   ..2 为路由对象匹配一个请求路径            app.use("/home", home);
+   ..3 在这个路由对象下面继续创建二级路由     home.get("/index", (req, res) => {});
+   一二级目录一起访问  localhost:3000/home/index
+
+
+2.参数的获取
+    .1 get请求参数的获取 
+       req.query
+    .2 post请求参数的获取
+        借助第三方包: body-parser  npm install body-parser
+        配置body-parser模块  app.use(bodyParser.urlencoded({ extended:false }))
+          (内部实现机制: 对所有请求调用bodyParser.urlencoded({ extended:false })对请求进行处理,  
+          ps:extended:false false,表示利用queryString系统模块对参数的值进行处理;true用另一个第三方模块QS来处理参数(更强大,但目前可以不用)
+            ..1检测当前请求中是否包含了请求参数,包含则接收,并将请求参数转换成对象类型
+            ..2为req这个参数添加一个body属性,将请求参数的值赋给了req.body属性
+            ..3在方法的内部调用next()方法将请求控制权交给下一个中间件)
+    
+
+3.Express路由参数(另一种传递以及获取get请求的方式)
+  app.get('/find/:id',callback)   url形式:localhost:3000/find/123
+  这里 :id 是一个占位符,表示当前路由要接收一个id作为参数
+
+
+
+4.总结: 两种传递\获取get请求参数的方式
+   1.express框架中
+      app.get('/find',callback)
+      获取: req.query                 
+      传递: localhost:3000/index?age=18&name=zhangsan
+   2.路由中
+     app.get('/find/:age/:name',callback)
+     获取: req.params
+     传递: localhost:3000/index/18/zhangsan
+

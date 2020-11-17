@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ajax错误处理</title>
+  </head>
+  <body>
+    <button id="btn">发送ajax请求</button>
+  </body>
+  <script>
+    var btn = document.getElementById("btn");
+    btn.onclick = function () {
+      //1. 创建ajax对象
+      var xhr = new XMLHttpRequest();
+
+      //2. 告诉ajax对象向哪儿发送请求 和 请求方式
+      // .1请求方式 .2 请求地址 (实际就是服务器端的路由地址)
+      xhr.open("get", "http://localhost:4000/cache?t=" + Math.random());
+
+      //3. 发送请求
+      xhr.send();
+
+      //4. 获取响应数据(需要一段时间才能接受到)
+      xhr.onreadystatechange = function () {
+        //服务器端响应已经完成， 且 真正请求成功，且数据已经接收
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          alert(xhr.responseText);
+        }
+      };
+      //网络中断触发 onerror事件
+      xhr.onerror = function () {
+        alert("网络中断无法发送ajax请求");
+      };
+    };
+
+    //Ajax状态码： 表示Ajax请求的过程状态   ajax对象返回的
+    //Http状态码： 表示请求的处理结果       服务器端返回的
+  </script>
+</html>

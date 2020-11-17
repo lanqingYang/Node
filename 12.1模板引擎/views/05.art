@@ -1,0 +1,11 @@
+<!-- {{extend '继承的模板的路径'}} -->
+{{extend './common/layout.art'}}
+
+<!-- 通过名字去指定填充模板中的哪个坑 -->
+{{block 'content'}}
+<p>{{ msg }}</p>
+{{/block}}
+
+{{block 'link'}}
+<link rel="stylesheet" href="#">
+{{/block}}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>index页面</title>
+    <link rel="stylesheet" href="./css/main.css" />
+  </head>
+  <body>
+    <div class="title">
+      <h1>学生档案</h1>
+    </div>
+    <div class="content">
+      <form action="/add" method="post">
+        <label for="name">姓 名: </label>
+        <input type="text" name="name" id="name" /><br />
+        <label for="age"
+          >年 龄: <input type="text" name="age" id="age" /> </label
+        ><br />
+        <label>性 别：</label>
+        <input type="radio" checked name="sex" value="男" />男
+        <input type="radio" name="sex" value="女" />女 <br />
+        <label for="email"
+          >邮箱地址: <input type="text" name="email" id="email" /> </label
+        ><br />
+        <label>爱 好:</label>
+        <input type="checkbox" name="hobbies" value="敲代码" />敲代码
+        <input type="checkbox" name="hobbies" value="打篮球" />打篮球
+        <input type="checkbox" name="hobbies" value="睡觉" /> 睡觉<br />
+        <label>所属学院:</label>
+        <select name="college" id="college">
+          <option value="软件工程" selected>软件工程</option>
+          <option value="国际学院">国际学院</option>
+          <option value="传媒学院">传媒学院</option>
+        </select>
+        <br />
+        <label>入学日期: </label><input type="date" name="enterDate" /><br />
+        <div class="submit">
+          <button type="submit">提 交</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
