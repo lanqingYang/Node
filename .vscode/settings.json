@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.art": "html"
+    },
+    
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.showAbbreviationSuggestions": true,
+    "emmet.showExpandedAbbreviation": "always",
+    "emmet.includeLanguages": {
+        "javascript": "html"
+    }
+}
