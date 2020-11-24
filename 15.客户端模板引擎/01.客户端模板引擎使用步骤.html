@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>刻画u但模板引擎使用步骤</title>
+    <!-- 1.引入js文件 -->
+    <script src="./template-web.js"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+  </body>
+  <!-- 2.准备template模板 -->
+  <script type="text/html" id="tpl">
+    <div>{{name}}:{{age}}</div>
+  </script>
+  <script>
+    //3. 告诉模板引擎将那个数据和那个模板进行拼接
+    //1）模板 2）数据 对象类型
+    //方法的返回值就是拼接好的字符串
+    var html = template("tpl", { name: "zhagnsan", age: 1 });
+    var div = document.querySelector("div");
+    div.innerHTML = html;
+  </script>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormData对象</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" name="username" />
+      <input type="password" name="password" />
+      <input type="button" value="提交" class="btn" />
+    </form>
+  </body>
+  <script>
+    var btn = document.querySelector(".btn");
+    var form = document.querySelector("#form");
+    //查看它下面的所有方法
+    console.dir(FormData);
+
+    btn.addEventListener("click", function () {
+      //将HTML表单转换为formData对象
+      var formData = new FormData(form);
+
+      /* -------------formData对象的实例方法----------------- */
+      /* .1 formData.get('key') 获取表单对象属性的值 */
+      console.log(formData.get("username")); //zhangsan
+      /* .2 .set('key', "value") 设置表单对象属性的值  用于二次处理表单的值 ：注意设置的表单属性存在那么就替换，不存在就新增*/
+      formData.set("username", "唐昊"); //不管用户输入什么，username的值都会是唐昊
+      formData.append("username", "lanqing"); //不覆盖原有值，新增一个username属性 但是不做特殊设置，服务器端会只认最后一次提交的，但是在控制台中可以看到两个username
+      formData.set("age", "1"); //当前表单属性不存在 会新增
+      /* .3 .delete('key') 删除表单对象属性的值 */
+      formData.delete("password"); //password表单属性被删除
+      /* .4 .append('key', "value") 追加表单对象属性的值 */
+      var f = new FormData();
+      f.append("fruits", "苹果");
+      console.log(f.get("fruits")); //苹果
+      /* set和append方法的区别，在属性名存在的情况下，set会覆盖原有键名的值，append会保留两个值 */
+
+      //创建ajax对象
+      var xhr = new XMLHttpRequest();
+      //对ajax对象进行配置
+      //这里必须是post，因为get方式的参数要放到地址栏中
+      xhr.open("post", "http://localhost:3000/formData");
+      //发送请求
+      xhr.send(formData);
+      xhr.onload = function () {
+        //http状态码判断
+        if (xhr.status == 200) {
+          console.log(xhr.responseText);
+        }
+      };
+    });
+  </script>
+</html>

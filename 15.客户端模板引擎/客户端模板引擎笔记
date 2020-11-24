@@ -1,0 +1,51 @@
+(2020-11-22)
+1. art-template有对应的服务器端版本(12.1)和客户端版本
+    作用都是将数据与HTML进行拼接
+
+    安装：npm install art-template --save
+    在浏览器中实时编译： 去官方文档中下载js文件
+
+(2020-11-24)
+
+2.语法规则和注意事项（04）
+     <script type="text/html" id="areaTpl">
+    <option value="">请选择城市</option>
+    {{each area}}
+    <option value="{{$value.id}}">{{$value.name}}</option>
+    {{/each}}
+  </script>
+
+  配合  //将服务器端返回的数据和html进行拼接
+          var html = template("areaTpl", { area: result });
+
+
+    注意： id是唯一的  比如标签中的id名为province ，script的id就不可以为province了！！
+
+3.formData对象（05）
+    作用： .1 模拟HTML表单，相当于将HTML表单映射成表单对象，自动将表单对象中的数据拼接成请求参数格式
+          .2 异步上传二进制文件
+
+    表单中 input  的name属性必须设置，会将name属性的名称当作对象的属性名
+
+    使用： .1 准备html表单
+          .2 将HTML表单转转化为formData对象 
+            var form = document.querySelector("#form");
+            var formData = new FormData(form);
+
+          .3 提交表单对象 xhr.send(formData)  [formData对象不能放在get请求中]
+
+    注意事项：
+        .1  body-parse这个模块只能处理客户端向服务器端传递过来的post请求参数，
+            但是这个模块不能处理客户端向服务器端传递过来的formData对象
+            利用formidable模块来处理
+
+    实例方法：(05)
+      .1 formData.get('key') 获取表单对象属性的值 
+      .2 .set('key', "value") 设置表单对象属性的值  用于二次处理表单的值 ：注意设置的表单属性存在那么就替换，不存在就新增
+      .3 .delete('key') 删除表单对象属性的值
+      .4 .append('key', "value") 追加表单对象属性的值 
+      /* set和append方法的区别，在属性名存在的情况下，set会覆盖原有键名的值，append会保留两个值
+      但是不做特殊设置，服务器端会只认最后一次提交的，但是在控制台中可以看到两个username */
+
+        //查看它下面的所有方法
+        console.dir(FormData);
