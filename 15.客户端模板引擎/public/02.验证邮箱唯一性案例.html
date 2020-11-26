@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>验证邮箱唯一性</title>
+    <script src="/js/ajax.js"></script>
+  </head>
+  <!-- 
+      案例分析： 1.获取文本框并为其添加离开焦点事件
+                2. 离开时，检测邮箱地址是否符合规范
+                3. 不符合，组织向下执行
+                4. 向服务器端发送请求，检测邮箱地址是否被注册(810122753@qq.com此邮箱已经被注册过了)
+                5. 根据服务器端返回值据决定客户端的显示信息
+   -->
+  <style>
+    .right {
+      color: green;
+    }
+    .wrong {
+      color: red;
+    }
+  </style>
+  <body>
+    <div id="container">
+      <div>
+        <label for="">邮箱地址</label>
+        <input type="text" class="" placeholder="请输入邮箱地址" id="email" />
+        <p id="info"></p>
+      </div>
+    </div>
+  </body>
+  <script>
+    //获取页面中的元素
+    var input = document.querySelector("#email");
+    var p = document.querySelector("p");
+
+    //添加离开焦点事件
+    input.addEventListener("blur", function () {
+      //获取用户输入的邮箱地址
+      var email = this.value;
+      //邮箱的正则表达式
+      var emailReg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+
+      if (!emailReg.test(email)) {
+        p.innerHTML = "邮箱格式错误";
+        p.className = "wrong";
+        return;
+      }
+
+      //向服务器端发送请求
+      ajax({
+        type: "get",
+        url: "http://localhost:3000/verifyEmailAdress",
+        data: {
+          email: email,
+        },
+        success: function (result) {
+          //   console.log(result);
+          p.innerHTML = result.message;
+          p.className = "right";
+        },
+        error: function (result) {
+          //   console.log(result);
+          p.innerHTML = result.message;
+          p.className = "wrong";
+        },
+      });
+    });
+  </script>
+</html>

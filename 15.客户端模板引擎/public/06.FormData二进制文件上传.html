@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>二进制文件上传</title>
+  </head>
+  <style>
+    .progress {
+      width: 800px;
+      height: 20px;
+      background-color: rgb(199, 199, 199);
+    }
+    .progress-bar {
+      background-color: pink;
+    }
+  </style>
+
+  <body>
+    <label for="">请选择上传文件</label>
+    <input type="file" id="file" />
+    <!-- 上传文件进度条 -->
+    <div class="progress">
+      <div class="progress-bar" style="width: 0%" id="bar">0%</div>
+    </div>
+    <div class="showfiles"></div>
+  </body>
+  <script>
+    var file = document.querySelector("input");
+    var bar = document.querySelector("#bar");
+    var showfiles = document.querySelector(".showfiles");
+
+    //选择文件时
+    file.addEventListener("change", function () {
+      //创建空表单对象
+      var formDate = new FormData();
+      //将用户选择的二进制文件追加到表单对象中，参数一为自定义的文件的名字
+      formDate.append("attrName", this.files[0]);
+
+      var xhr = new XMLHttpRequest();
+      //get请求方式不能用于文件上传，必须是post
+      xhr.open("post", "http://localhost:3000/upload");
+
+      /*------------ FormData文件上传进度展示 -----------------*/
+      xhr.upload.onprogress = function (ev) {
+        //在文件上传的过程中持续触发
+        // console.log(ev); //ev.loaded 属性： 目前上传文件的大小  ，ev.total：文件总大小
+        var uploading = (ev.loaded / ev.total) * 100 + "%";
+        //把值赋值给进度条
+        bar.style.width = uploading;
+        bar.innerHTML = uploading;
+      };
+
+      //发送请求
+      xhr.send(formDate);
+      //监听服务器相应给客户端的数据
+      xhr.onload = function () {
+        //对xhr的状态码进行判断
+        if (xhr.status == 200) {
+          //200---请求成功
+          console.log(xhr.responseText); //拿到的是json字符串
+
+          /* ------------文件在页面中能被查看 ---------*/
+          var img = document.createElement("img");
+          img.src = JSON.parse(xhr.responseText).path;
+          //当图片加载完成后，
+          img.onload = function () {
+            showfiles.appendChild(img);
+          };
+        }
+      };
+    });
+  </script>
+</html>

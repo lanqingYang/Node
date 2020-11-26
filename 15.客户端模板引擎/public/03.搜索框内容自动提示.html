@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>搜索框内容自动提示</title>
+    <script src="/js/ajax.js"></script>
+    <!-- 通过模板引擎进行拼接 -->
+    <script src="/js/template-web.js"></script>
+  </head>
+  <!-- 
+      案例：1. 获取搜索框并为其添加用户输入事件
+            2.获取用户输入关键字
+            3. 向服务器发送请求并携带关键字作为请求参数  oninput
+            4. 将相应数据显示在搜索框底部
+   -->
+  <style>
+    ul {
+      display: none;
+    }
+  </style>
+  <body>
+    <div>
+      <input type="text" id="search" placeholder="请输入关键字" />
+      <ul id="list-box">
+        <li>提示文字显示的地方</li>
+      </ul>
+    </div>
+  </body>
+  <script type="text/html" id="tpl">
+    {{each result}}
+    <li>{{$value}}</li>
+    {{/each}}
+  </script>
+  <script>
+    //获取搜索框
+    var search = document.querySelector("#search");
+    //获取提示文字的存放容器
+    var listbox = document.querySelector("#list-box");
+    //存储定时器的变量
+    var timer = null;
+
+    //绑定事件 oninput
+    search.addEventListener("input", function () {
+      //清除上一次开启的定时器
+      clearTimeout(timer);
+      //获取用户输入的内容
+      var key = this.value;
+
+      //判断用户是否输入了值
+      if (key.trim().length == 0) {
+        //如果用户没有在搜素框中输入内容，隐藏下拉框
+        listbox.style.display = "none";
+        return;
+      }
+
+      //2. 防止请求发送的过于快，进行无意义请求发送。设置防抖或者节流
+      //开启定时器让请求延迟发送
+      timer = setTimeout(function () {
+        //向服务器端发送请求
+        ajax({
+          type: "get",
+          url: "http://localhost:3000/searchAutoPrompt",
+          data: {
+            key: key,
+          },
+          success: function (result) {
+            //返回结果是一个数组，和输入的关键字相关内容
+            //   console.log(result); //[]
+            //使用模板引擎拼接字符串
+            var html = template("tpl", { result: result });
+            //将拼接好的字符串显示在页面中
+            listbox.innerHTML = html;
+            //显示ul容器
+            listbox.style.display = "block";
+          },
+        });
+      }, 800);
+    });
+  </script>
+</html>

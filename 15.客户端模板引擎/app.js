@@ -3,19 +3,49 @@ const express = require('express');
 //路径处理
 const path=require('path');
 
-const fomidable=require('formidable')
+const fomidable=require('formidable');
 
 const app=express();
 
-//解决跨域问题 中间件
-app.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-    res.header("X-Powered-By", ' 3.2.1')
-    res.header("Content-Type", "application/json;charset=utf-8");
-    next();
-});
+
+
+// 解决跨域问题 中间件
+// app.all('*', function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+//     res.header("X-Powered-By", ' 3.2.1')
+//     res.header("Content-Type", "application/json;charset=utf-8");
+//     next();
+// });
+
+//静态资源访问
+app.use(express.static(path.join(__dirname, "public")));
+
+
+
+
+//06FormDate二进制文件上传
+app.post('/upload',(req,res)=>{
+     //创建formidable表单解析对象
+     const form=new fomidable.IncomingForm();
+
+     //保留上传文件的后缀名字！！
+     form.keepExtensions=true;
+
+     //设置客户端上传文件的路径
+     form.uploadDir=path.join(__dirname,'public','uploads');
+
+
+     //解析客户端传递过来的FormData对象
+     //fields:表单中的普通请求参数，files：和文件上传的一些相关信息
+     form.parse(req,(err,fields,files)=>{
+         //将客户端传递过来的文件地址相应到客户端
+         res.send({
+             path:files.attrName.path.split('public')[1]
+         });
+     });
+})
 
 
 //05 FormData使用
