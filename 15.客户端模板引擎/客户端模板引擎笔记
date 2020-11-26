@@ -21,25 +21,25 @@
 
     注意： id是唯一的  比如标签中的id名为province ，script的id就不可以为province了！！
 
-3.formData对象（05）
-    ·作用： .1 模拟HTML表单，相当于将HTML表单映射成表单对象，自动将表单对象中的数据拼接成请求参数格式
+一、formData对象（05）
+    3·作用： .1 模拟HTML表单，相当于将HTML表单映射成表单对象，自动将表单对象中的数据拼接成请求参数格式
           .2 异步上传二进制文件
 
     表单中 input  的name属性必须设置，会将name属性的名称当作对象的属性名
 
-    ·使用： .1 准备html表单
+    4·使用： .1 准备html表单
           .2 将HTML表单转转化为formData对象 
             var form = document.querySelector("#form");
             var formData = new FormData(form);
 
           .3 提交表单对象 xhr.send(formData)  [formData对象不能放在get请求中]
 
-    ·注意事项：
+    5·注意事项：
         .1  body-parse这个模块只能处理客户端向服务器端传递过来的post请求参数，
             但是这个模块不能处理客户端向服务器端传递过来的formData对象
             利用formidable模块来处理
 
-    ·实例方法：(05)
+    6·实例方法：(05)
       .1 formData.get('key') 获取表单对象属性的值 
       .2 .set('key', "value") 设置表单对象属性的值  用于二次处理表单的值 ：注意设置的表单属性存在那么就替换，不存在就新增
       .3 .delete('key') 删除表单对象属性的值
@@ -50,7 +50,7 @@
         //查看它下面的所有方法
         console.dir(FormData);
       
-      ·二进制文件传输：！！！！！
+     7 ·二进制文件传输：！！！！！
        在服务器端：（06）
         .0 引入 formidable 第三方模块
         .1创建formidable表单解析对象
@@ -65,7 +65,7 @@
           res.send(fields);
          });
 
-      ·文件上传进度显示：（06）
+      8·文件上传进度显示：（06）
         xhr.upload.onprogress 事件。 与var uploading = (ev.loaded / ev.total) * 100 + "%"
         
         /* FormData文件上传进度展示 */
@@ -78,7 +78,7 @@
           bar.innerHTML = uploading;
         };
 
-    ·选取的文件显示在页面上：
+    9·选取的文件显示在页面上：（06）
       服务器端： res.send({
              path:files.attrName.path.split('public')[1]
          });
@@ -86,3 +86,17 @@
 
        客户端： 需要把拿到的path地址给img的src即可
         
+（2020-11-26）
+二、Ajax请求限制
+  ajax只能向自己的服务器发送请求。(同源政策)
+
+  10.同源：如果两个页面拥有相同的协议、域名、端口，那么就属于同一个源，否则不同源。
+      http://localhost:3000/dir2/other.html
+      http://localhost:3000/dir3/other1.html : 与1同源 
+      http://localhost:3001/dir3/other1.html : 与1不同源 端口不同
+      http://www.exeample:3000/dir3/other1.html : 与1不同源 域名不同
+      https://localhost:3000/dir2/other.html : 与1不同源 协议不同
+
+    同源目的：保证用户信息的安全，防止恶意的网站窃取数据。请求可以发送出去，只是浏览器拒绝接受返回结果，最终请求失败。
+
+
